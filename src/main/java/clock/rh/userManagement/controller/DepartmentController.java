@@ -2,6 +2,7 @@ package clock.rh.userManagement.controller;
 
 import clock.rh.userManagement.dto.department.CreateNewDepartmentDataDTO;
 import clock.rh.userManagement.dto.department.DetailDepartmentDataDTO;
+import clock.rh.userManagement.dto.users.UserRoleDataDTO;
 import clock.rh.userManagement.model.Department;
 import clock.rh.userManagement.repository.DepartmentRepository;
 import clock.rh.userManagement.service.DepartmentService;
@@ -14,6 +15,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/departments")
@@ -66,4 +69,14 @@ public class DepartmentController {
         departmentRepository.delete(department);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{id}/users")
+    public ResponseEntity<Page<UserRoleDataDTO>> getUsersByDepartment(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+
+        Page<UserRoleDataDTO> users = departmentService.getUsersByDepartment(id, pageable);
+        return ResponseEntity.ok(users);
+    }
+
 }

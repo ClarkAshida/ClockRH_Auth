@@ -4,6 +4,8 @@ import clock.rh.userManagement.model.UserRole;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDateTime;
+
 public record CreateNewUserDataDTO(
         @NotBlank
         String name,
@@ -17,6 +19,8 @@ public record CreateNewUserDataDTO(
         @Size(min = 11, max = 11, message = "O CPF deve conter 11 dígitos.")
         @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos.")
         String cpf,
+        @NotNull
+        LocalDateTime admissionDate,
         @NotNull
         @Valid
         UserRole role,

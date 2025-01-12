@@ -3,9 +3,11 @@ package clock.rh.userManagement.controller;
 import clock.rh.userManagement.dto.users.CreateNewUserDataDTO;
 import clock.rh.userManagement.dto.users.DetailUserDataDTO;
 import clock.rh.userManagement.dto.users.ListUserDataDTO;
+import clock.rh.userManagement.dto.users.UpdateUserDataDTO;
 import clock.rh.userManagement.model.User;
 import clock.rh.userManagement.repository.DepartmentRepository;
 import clock.rh.userManagement.repository.UserRepository;
+import clock.rh.userManagement.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private DepartmentRepository departmentRepository;
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     @Transactional
@@ -32,7 +36,7 @@ public class UserController {
             UriComponentsBuilder uriBuilder) {
 
         var department = departmentRepository.findById(createNewUserDataDTO.departmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Este setor não foi encontrado"));
 
         var user = new User(createNewUserDataDTO, department);
         userRepository.save(user);
@@ -45,6 +49,27 @@ public class UserController {
     public ResponseEntity<Page<ListUserDataDTO>> GetAllUsers(@PageableDefault(size = 10, sort = {"name"} ) Pageable pagination) {
         var page = userRepository.findAllByActiveTrue(pagination).map(ListUserDataDTO::new);
         return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DetailUserDataDTO> GetUserById(@PathVariable Long id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Este usuário não foi encontrado"));
+        return ResponseEntity.ok(new DetailUserDataDTO(user));
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<DetailUserDataDTO> updateUserInfo(@PathVariable Long id, @RequestBody @Valid UpdateUserDataDTO dto) {
+        DetailUserDataDTO updatedUser = userService.updateUserInfo(id, dto);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Este usuário não foi encontrado"));
+        user.deactivateUser();
+        return ResponseEntity.noContent().build();
     }
 
 }

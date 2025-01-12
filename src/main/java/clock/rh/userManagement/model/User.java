@@ -1,7 +1,9 @@
 package clock.rh.userManagement.model;
 
 import clock.rh.userManagement.dto.users.CreateNewUserDataDTO;
+import clock.rh.userManagement.dto.users.UpdateUserDataDTO;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,15 +41,20 @@ public class User implements UserDetails {
     private UserRole role;
     private boolean active;
 
+    // Constructor for creating a new user information
     public User(CreateNewUserDataDTO newUserDataDTO, Department department) {
         this.name = newUserDataDTO.name();
         this.email = newUserDataDTO.email();
         this.password = newUserDataDTO.password();
         this.cpf = newUserDataDTO.cpf();
+        this.admissionDate = newUserDataDTO.admissionDate();
         this.role = newUserDataDTO.role();
         this.department = department;
-        this.admissionDate = LocalDateTime.now();
         this.active = true;
+    }
+
+    public void deactivateUser() {
+        this.active = false;
     }
 
     @Override

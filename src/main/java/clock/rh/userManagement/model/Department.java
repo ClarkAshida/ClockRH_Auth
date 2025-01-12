@@ -1,5 +1,6 @@
 package clock.rh.userManagement.model;
 
+import clock.rh.userManagement.dto.department.CreateNewDepartmentDataDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

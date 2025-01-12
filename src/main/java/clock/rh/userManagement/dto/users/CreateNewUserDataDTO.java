@@ -7,23 +7,23 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 public record CreateNewUserDataDTO(
-        @NotBlank
+        @NotBlank(message = "O nome é obrigatório.")
         String name,
-        @NotBlank
+        @NotBlank(message = "O email é obrigatório.")
         @Email
         String email,
-        @NotBlank
+        @NotBlank(message = "A senha é obrigatória.")
         @Size(min = 8, max = 20, message = "A senha deve conter entre 8 e 20 caracteres.")
         String password,
-        @NotBlank
+        @NotBlank(message = "O CPF é obrigatório.")
         @Size(min = 11, max = 11, message = "O CPF deve conter 11 dígitos.")
         @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos.")
         String cpf,
-        @NotNull
+        @NotNull(message = "A data de admissão é obrigatória.")
         LocalDateTime admissionDate,
-        @NotNull
+        @NotNull(message = "A função é obrigatória.")
         @Valid
         UserRole role,
-        @NotNull
+        @NotNull(message = "O setor é obrigatório.")
         Long departmentId) {
 }

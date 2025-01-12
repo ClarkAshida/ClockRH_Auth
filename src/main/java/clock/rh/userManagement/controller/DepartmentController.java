@@ -79,4 +79,12 @@ public class DepartmentController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/{id}/managers")
+    public ResponseEntity<Page<UserRoleDataDTO>> getManagersByDepartment(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+        Page<UserRoleDataDTO> managers = departmentService.getManagersByDepartment(id, pageable);
+        return ResponseEntity.ok(managers);
+    }
+
 }

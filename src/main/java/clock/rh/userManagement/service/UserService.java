@@ -4,6 +4,7 @@ import clock.rh.userManagement.dto.users.DetailUserDataDTO;
 import clock.rh.userManagement.dto.users.UpdateUserDataDTO;
 import clock.rh.userManagement.model.Department;
 import clock.rh.userManagement.model.User;
+import clock.rh.userManagement.model.UserRole;
 import clock.rh.userManagement.repository.DepartmentRepository;
 import clock.rh.userManagement.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,12 +37,21 @@ public class UserService {
         if (dto.password() != null && !dto.password().isBlank()) {
             user.setPassword(dto.password());
         }
-
-        // Somente atualiza o departamento se o ID for informado e válido
+        if (dto.role() != null) {
+            user.setRole(dto.role());
+        }
         if (dto.departmentId() != null) {
             Department department = departmentRepository.findById(dto.departmentId())
                     .orElseThrow(() -> new EntityNotFoundException("Departamento não encontrado"));
             user.setDepartment(department);
+        }
+        if (user.isManager() && dto.departmentId() != null) {
+            if (!user.getDepartment().getId().equals(dto.departmentId())) {
+                throw new IllegalArgumentException("Gestores devem pertencer ao mesmo departamento");
+            } else if (!user.getDepartment().getManagers().contains(user)) {
+                // Add the manager to the department if he is not in the list
+                user.getDepartment().getManagers().add(user);
+            }
         }
 
         userRepository.save(user);

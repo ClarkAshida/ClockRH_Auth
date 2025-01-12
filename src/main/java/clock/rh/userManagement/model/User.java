@@ -57,6 +57,10 @@ public class User implements UserDetails {
         this.active = false;
     }
 
+    public boolean isManager() {
+        return this.role == UserRole.GESTOR;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(() -> this.role.name());

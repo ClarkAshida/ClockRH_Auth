@@ -22,4 +22,9 @@ public class Department {
 
     @OneToMany(mappedBy = "department")
     private List<User> users; // One department can have many users
+
+    @OneToMany
+    @JoinColumn(name = "department_id")
+    private List<User> managers;  // One department can have many managers
+
 }

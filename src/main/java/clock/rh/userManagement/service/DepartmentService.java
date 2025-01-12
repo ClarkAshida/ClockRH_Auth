@@ -43,4 +43,9 @@ public class DepartmentService {
         return userRepository.findByDepartmentId(departmentId, pageable)
                 .map(UserRoleDataDTO::new);
     }
+
+    public Page<UserRoleDataDTO> getManagersByDepartment(Long departmentId, Pageable pageable) {
+        return userRepository.findManagersByDepartmentId(departmentId, pageable)
+                .map(UserRoleDataDTO::new);
+    }
 }

@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM Users u WHERE u.department.id = :departmentId AND u.role = 'GESTOR'")
     Page<User> findManagersByDepartmentId(Long departmentId, Pageable pageable);
+
+    UserDetails findByEmail(String email);
 }

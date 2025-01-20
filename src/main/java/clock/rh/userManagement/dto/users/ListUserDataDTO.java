@@ -9,6 +9,11 @@ public record ListUserDataDTO (
         String department
 ){
     public ListUserDataDTO(User user) {
-        this(user.getName(), user.getEmail(), user.getCpf(), user.getDepartment().getName());
+        this(
+                user.getName() != null ? user.getName() : "Sem Nome",
+                user.getEmail() != null ? user.getEmail() : "Sem Email",
+                user.getCpf() != null ? user.getCpf() : "Sem CPF",
+                user.getDepartment() != null ? user.getDepartment().getName() : "Sem Departamento"
+        );
     }
 }

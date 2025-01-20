@@ -10,6 +10,11 @@ public record UserRoleDataDTO(
         UserRole role
 ) {
     public UserRoleDataDTO(User user) {
-        this(user.getId(), user.getName(), user.getCpf(), user.getRole());
+        this(
+                user.getId(),
+                user.getName() != null ? user.getName() : "Sem Nome",
+                user.getCpf() != null ? user.getCpf() : "Sem CPF",
+                user.getRole()
+        );
     }
 }

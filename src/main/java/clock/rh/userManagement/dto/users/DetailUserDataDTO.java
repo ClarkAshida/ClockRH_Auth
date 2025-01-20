@@ -16,6 +16,15 @@ public record DetailUserDataDTO(
         boolean active
 ) {
     public DetailUserDataDTO(User user) {
-        this(user.getId(), user.getName(), user.getEmail(), user.getCpf(), user.getRole(), user.getDepartment().getName(), user.getAdmissionDate(), user.isActive());
+        this(
+                user.getId(),
+                user.getName() != null ? user.getName() : "Sem Nome",
+                user.getEmail() != null ? user.getEmail() : "Sem Email",
+                user.getCpf() != null ? user.getCpf() : "Sem CPF",
+                user.getRole(),
+                user.getDepartment() != null ? user.getDepartment().getName() : "Sem Departamento",
+                user.getAdmissionDate() != null ? user.getAdmissionDate() : LocalDateTime.MIN,
+                user.isActive()
+        );
     }
 }

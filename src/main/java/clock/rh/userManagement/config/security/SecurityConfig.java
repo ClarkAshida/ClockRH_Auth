@@ -42,17 +42,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Temporariamente desabilitar a criptografia
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                return rawPassword.toString(); // Sem criptografia
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return rawPassword.toString().equals(encodedPassword); // Comparação direta
-            }
-        };
+        return new BCryptPasswordEncoder();
     }
 }

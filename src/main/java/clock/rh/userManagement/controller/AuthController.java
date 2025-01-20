@@ -1,14 +1,16 @@
 package clock.rh.userManagement.controller;
 
-import clock.rh.userManagement.config.security.TokenJWTDataDTO;
 import clock.rh.userManagement.config.security.TokenService;
 import clock.rh.userManagement.dto.auth.LoginDataDTO;
+import clock.rh.userManagement.dto.auth.LoginResponseDTO;
+import clock.rh.userManagement.dto.users.DetailUserDataDTO;
 import clock.rh.userManagement.model.User;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,16 +30,24 @@ public class AuthController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity login(@RequestBody @Valid LoginDataDTO loginData){
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDataDTO loginData) {
         try {
-            var authenticationToken = new UsernamePasswordAuthenticationToken(loginData.email(), loginData.password());
+            var authenticationToken = new UsernamePasswordAuthenticationToken(
+                    loginData.email(), loginData.password());
             var authentication = authManager.authenticate(authenticationToken);
-            var tokenJWT = tokenService.generateToken((User) authentication.getPrincipal());
-            return ResponseEntity.ok(new TokenJWTDataDTO(tokenJWT));
 
+            var user = (User) authentication.getPrincipal();
+            var tokenJWT = tokenService.generateToken(user);
+
+            var userData = new DetailUserDataDTO(user);
+            var response = new LoginResponseDTO(tokenJWT, userData);
+
+            return ResponseEntity.ok(response);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas.");
         } catch (Exception exception) {
-            String errorMessage = "Login error: " + exception.getClass().getSimpleName() + " - " + exception.getMessage();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro no login: " + exception.getMessage());
         }
     }
 }

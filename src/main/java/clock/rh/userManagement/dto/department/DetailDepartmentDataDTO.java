@@ -7,6 +7,9 @@ public record DetailDepartmentDataDTO(
         String name
 ) {
     public DetailDepartmentDataDTO(Department department) {
-        this(department.getId(), department.getName());
+        this(
+                department.getId(),
+                department.getName() != null ? department.getName() : "Departamento sem nome"
+        );
     }
 }

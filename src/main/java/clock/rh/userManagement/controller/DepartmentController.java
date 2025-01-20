@@ -48,7 +48,8 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DetailDepartmentDataDTO> detailDepartment(@PathVariable Long id) {
-        var department = departmentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Este setor não foi encontrado"));
+        var department = departmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("O departamento com ID " + id + " não foi encontrado."));
         return ResponseEntity.ok(new DetailDepartmentDataDTO(department));
     }
 
@@ -65,7 +66,8 @@ public class DepartmentController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<?> deleteDepartment(@PathVariable Long id) {
-        var department = departmentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Este setor não foi encontrado"));
+        var department = departmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("O departamento com ID " + id + " não foi encontrado."));
         departmentRepository.delete(department);
         return ResponseEntity.ok().build();
     }

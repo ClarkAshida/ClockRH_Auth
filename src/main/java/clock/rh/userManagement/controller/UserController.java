@@ -8,17 +8,19 @@ import clock.rh.userManagement.model.User;
 import clock.rh.userManagement.repository.DepartmentRepository;
 import clock.rh.userManagement.repository.UserRepository;
 import clock.rh.userManagement.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
+@SecurityRequirement(name = "bearer-key")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -28,6 +30,8 @@ public class UserController {
     private DepartmentRepository departmentRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping
     @Transactional
@@ -38,7 +42,10 @@ public class UserController {
         var department = departmentRepository.findById(createNewUserDataDTO.departmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Este setor não foi encontrado"));
 
+        String encryptedPassword = passwordEncoder.encode(createNewUserDataDTO.password());
+
         var user = new User(createNewUserDataDTO, department);
+        user.setPassword(encryptedPassword);
         userRepository.save(user);
 
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();

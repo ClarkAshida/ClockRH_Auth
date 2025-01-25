@@ -6,6 +6,7 @@ import clock.rh.userManagement.dto.users.UserRoleDataDTO;
 import clock.rh.userManagement.model.Department;
 import clock.rh.userManagement.repository.DepartmentRepository;
 import clock.rh.userManagement.service.DepartmentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-
+@SecurityRequirement(name = "bearer-key")
 @RestController
 @RequestMapping("/departments")
 public class DepartmentController {

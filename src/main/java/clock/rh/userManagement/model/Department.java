@@ -4,6 +4,7 @@ import clock.rh.userManagement.dto.department.CreateNewDepartmentDataDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "department")
@@ -27,4 +28,9 @@ public class Department {
     @JoinColumn(name = "department_id")
     private List<User> managers;  // One department can have many managers
 
+    public Department(String name, ArrayList<User> users, ArrayList<User> managers) {
+        this.name = name;
+        this.users = users;
+        this.managers = managers;
+    }
 }
